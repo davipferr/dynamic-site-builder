@@ -22,6 +22,37 @@ export default function FieldInput({ field, value, onChange }) {
           onChange={(e) => onChange(e.target.checked)}
         />
       );
+    case 'number':
+      // An empty box stays empty instead of turning into 0.
+      return (
+        <input
+          type="number"
+          min={field.min}
+          max={field.max}
+          step={field.step}
+          value={value ?? ''}
+          onChange={(e) => onChange(e.target.value === '' ? '' : Number(e.target.value))}
+        />
+      );
+    case 'range':
+      return (
+        <div className="range-input">
+          <input
+            type="range"
+            min={field.min}
+            max={field.max}
+            step={field.step}
+            value={value ?? field.min}
+            onChange={(e) => onChange(Number(e.target.value))}
+          />
+          <output>
+            {value ?? field.min}
+            {field.unit}
+          </output>
+        </div>
+      );
+    case 'emoji':
+      return <EmojiInput value={value} onChange={onChange} />;
     case 'select':
       return (
         <select value={value ?? ''} onChange={(e) => onChange(e.target.value)}>
@@ -37,6 +68,52 @@ export default function FieldInput({ field, value, onChange }) {
     default:
       return <input type="text" value={value ?? ''} onChange={(e) => onChange(e.target.value)} />;
   }
+}
+
+const commonEmojis = [
+  '⭐', '⚡', '🎯', '🤝', '❤️', '🔥', '✨', '🚀',
+  '💡', '✅', '📈', '💰', '🛡️', '⏱️', '📦', '🎨',
+  '🧁', '🥐', '☕', '🍰', '📷', '🎵', '🌱', '🏆',
+  '📞', '✉️', '📍', '🌍', '🔒', '🛠️', '😊', '👍',
+];
+
+// A text box (any emoji can still be typed or pasted) plus a grid of common ones.
+function EmojiInput({ value, onChange }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="emoji-input">
+      <div className="emoji-input__row">
+        <input type="text" value={value ?? ''} onChange={(e) => onChange(e.target.value)} />
+        <button
+          type="button"
+          className="small"
+          aria-expanded={isOpen}
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          {isOpen ? 'Close' : 'Pick'}
+        </button>
+      </div>
+      {isOpen && (
+        <div className="emoji-input__grid">
+          {commonEmojis.map((emoji) => (
+            <button
+              key={emoji}
+              type="button"
+              title={emoji}
+              className={emoji === value ? 'selected' : ''}
+              onClick={() => {
+                onChange(emoji);
+                setIsOpen(false);
+              }}
+            >
+              {emoji}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
 
 // An editable, reorderable list (feature cards, gallery images...).

@@ -24,7 +24,7 @@ Features.fields = [
     type: 'list',
     itemLabel: 'title',
     itemFields: [
-      { name: 'icon', label: 'Icon (emoji)', type: 'text' },
+      { name: 'icon', label: 'Icon (emoji)', type: 'emoji' },
       { name: 'title', label: 'Title', type: 'text' },
       { name: 'text', label: 'Text', type: 'textarea' },
     ],

@@ -1,7 +1,10 @@
-export default function Hero({ title, subtitle, buttonText, buttonLink, backgroundImage }) {
-  const style = backgroundImage
-    ? { backgroundImage: `linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.45)), url(${backgroundImage})` }
-    : undefined;
+export default function Hero({ title, subtitle, buttonText, buttonLink, backgroundImage, height }) {
+  const style = {
+    ...(backgroundImage && {
+      backgroundImage: `linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.45)), url(${backgroundImage})`,
+    }),
+    ...(height && { paddingBlock: `${height}px` }),
+  };
 
   return (
     <section className={`hero ${backgroundImage ? 'hero--image' : ''}`} style={style}>
@@ -23,6 +26,7 @@ Hero.fields = [
   { name: 'buttonText', label: 'Button text', type: 'text' },
   { name: 'buttonLink', label: 'Button link', type: 'text' },
   { name: 'backgroundImage', label: 'Background image URL', type: 'text' },
+  { name: 'height', label: 'Height (top/bottom space)', type: 'range', min: 32, max: 200, step: 8, unit: 'px' },
 ];
 Hero.defaults = {
   title: 'Welcome to my site',
@@ -30,4 +34,5 @@ Hero.defaults = {
   buttonText: 'Get in touch',
   buttonLink: '#contact',
   backgroundImage: '',
+  height: 96,
 };
