@@ -16,11 +16,14 @@ export function loadSites() {
   return ensureIds(defaultSites);
 }
 
+// Returns whether the save worked, so the UI can tell the user.
 export function saveSites(sites) {
   try {
     localStorage.setItem(KEY, JSON.stringify(sites));
+    return true;
   } catch {
-    // Storage full or blocked: ignore for this demo.
+    // Storage full or blocked.
+    return false;
   }
 }
 

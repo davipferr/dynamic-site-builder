@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import PageRenderer from './renderer/PageRenderer.jsx';
 import Editor from './editor/Editor.jsx';
 import { loadSites, saveSites, resetSites } from './storage.js';
@@ -17,8 +17,19 @@ export default function App() {
 
   const site = sites[siteId];
 
-  // Persist every change.
-  useEffect(() => saveSites(sites), [sites]);
+  const [saveStatus, setSaveStatus] = useState(null); // null | 'saved' | 'error'
+  const loadedSites = useRef(sites);
+
+  // Persist every change and briefly show "Saved ✓". Nothing is shown for
+  // the data we just loaded, only for the user's edits.
+  useEffect(() => {
+    const ok = saveSites(sites);
+    if (sites === loadedSites.current) return;
+    setSaveStatus(ok ? 'saved' : 'error');
+    if (!ok) return;
+    const timer = setTimeout(() => setSaveStatus(null), 1500);
+    return () => clearTimeout(timer);
+  }, [sites]);
 
   // Keep the URL in sync with the selected site.
   useEffect(() => {
@@ -41,6 +52,14 @@ export default function App() {
     <div className="app">
       <header className="toolbar">
         <strong className="toolbar__brand">Site Builder</strong>
+
+        <span
+          className={`save-status ${saveStatus ? `save-status--${saveStatus}` : ''}`}
+          role="status"
+        >
+          {saveStatus === 'saved' && 'Saved ✓'}
+          {saveStatus === 'error' && "Couldn't save"}
+        </span>
 
         <label className="toolbar__site">
           Client:

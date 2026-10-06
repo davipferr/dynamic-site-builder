@@ -31,6 +31,22 @@ body {
   margin-right: auto;
 }
 
+.save-status {
+  font-size: 13px;
+  color: #86efac;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.save-status--saved,
+.save-status--error {
+  opacity: 1;
+}
+
+.save-status--error {
+  color: #fca5a5;
+}
+
 .toolbar__site {
   display: flex;
   align-items: center;
@@ -105,6 +121,13 @@ select {
   color: #18181b;
 }
 
+input.toggle {
+  width: auto;
+  height: 18px;
+  aspect-ratio: 1;
+  accent-color: #7c3aed;
+}
+
 input[type='color'] {
   padding: 2px;
   height: 34px;
@@ -167,6 +190,33 @@ input[type='color'] {
   font-size: 13px;
   color: #52525b;
   margin-bottom: 4px;
+}
+
+.theme-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.theme-presets button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  font-size: 13px;
+}
+
+.theme-presets__swatch {
+  display: flex;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid #d4d4d8;
+}
+
+.theme-presets__swatch span {
+  width: 8px;
+  height: 16px;
 }
 
 .theme-grid {
@@ -236,6 +286,20 @@ input[type='color'] {
 
 .section-editor__actions button {
   padding: 2px 8px;
+}
+
+.section-editor.is-hidden .section-editor__title {
+  color: #a1a1aa;
+}
+
+.badge {
+  margin-left: 8px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: #f4f4f5;
+  color: #71717a;
+  font-size: 11px;
+  font-weight: 500;
 }
 
 .section-editor__body {
@@ -401,6 +465,125 @@ input[type='color'] {
 
 .contact a {
   color: var(--primary);
+}
+
+.faq details {
+  border-bottom: 1px solid color-mix(in srgb, var(--text) 15%, transparent);
+  padding: 14px 0;
+}
+
+.faq summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.faq summary::marker {
+  color: var(--primary);
+}
+
+.faq details p {
+  margin: 10px 0 0;
+  line-height: 1.7;
+  opacity: 0.85;
+}
+
+.pricing {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+
+.plan {
+  padding: 28px 24px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--text) 15%, transparent);
+  text-align: center;
+}
+
+.plan--highlighted {
+  border: 2px solid var(--primary);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--primary) 20%, transparent);
+}
+
+.plan h3 {
+  margin: 0;
+}
+
+.plan__price {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin: 12px 0;
+}
+
+.plan__price span {
+  font-size: 1rem;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.plan ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+  line-height: 2;
+}
+
+.plan .btn {
+  display: inline-block;
+  padding: 10px 24px;
+  border-radius: 999px;
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.plan--highlighted .btn {
+  background: var(--primary);
+  color: #fff;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 20px;
+  text-align: center;
+}
+
+.stat strong {
+  display: block;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  color: var(--primary);
+}
+
+.stat span {
+  opacity: 0.75;
+}
+
+.divider {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.divider--small {
+  padding-block: 12px;
+}
+
+.divider--medium {
+  padding-block: 32px;
+}
+
+.divider--large {
+  padding-block: 64px;
+}
+
+.divider hr {
+  margin: 0;
+  border: none;
+  border-top: 1px solid color-mix(in srgb, var(--text) 15%, transparent);
 }
 
 .unknown-section {

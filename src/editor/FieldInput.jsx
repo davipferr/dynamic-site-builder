@@ -13,6 +13,15 @@ export default function FieldInput({ field, value, onChange }) {
       return (
         <input type="color" value={value ?? '#000000'} onChange={(e) => onChange(e.target.value)} />
       );
+    case 'toggle':
+      return (
+        <input
+          type="checkbox"
+          className="toggle"
+          checked={!!value}
+          onChange={(e) => onChange(e.target.checked)}
+        />
+      );
     case 'select':
       return (
         <select value={value ?? ''} onChange={(e) => onChange(e.target.value)}>

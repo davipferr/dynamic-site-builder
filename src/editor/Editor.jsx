@@ -22,6 +22,30 @@ const themeFields = [
   },
 ];
 
+// One click sets the whole theme. The user can still tweak each value after.
+const themePresets = [
+  {
+    name: 'Light',
+    theme: { primaryColor: '#2563eb', backgroundColor: '#ffffff', textColor: '#1f2937', font: 'system-ui, sans-serif' },
+  },
+  {
+    name: 'Dark',
+    theme: { primaryColor: '#a78bfa', backgroundColor: '#0f0f14', textColor: '#e5e5ef', font: 'system-ui, sans-serif' },
+  },
+  {
+    name: 'Warm',
+    theme: { primaryColor: '#c2410c', backgroundColor: '#fffaf3', textColor: '#292524', font: 'Georgia, serif' },
+  },
+  {
+    name: 'Pastel',
+    theme: { primaryColor: '#db2777', backgroundColor: '#fdf2f8', textColor: '#4a044e', font: '"Trebuchet MS", sans-serif' },
+  },
+  {
+    name: 'Forest',
+    theme: { primaryColor: '#15803d', backgroundColor: '#f0fdf4', textColor: '#14532d', font: 'Georgia, serif' },
+  },
+];
+
 // The editor only ever produces a new version of the site config.
 // It doesn't render the site itself; the PageRenderer does that.
 export default function Editor({ site, onChange }) {
@@ -46,6 +70,28 @@ export default function Editor({ site, onChange }) {
 
   const deleteSection = (id) => updateSections(site.sections.filter((s) => s.id !== id));
 
+  const toggleHidden = (id) =>
+    updateSections(site.sections.map((s) => (s.id === id ? { ...s, hidden: !s.hidden } : s)));
+
+  // The copy goes right below the original. It and its list items get new
+  // ids, otherwise drag and drop would confuse them with the originals.
+  const duplicateSection = (index) => {
+    const original = site.sections[index];
+    const props = structuredClone(original.props);
+    for (const [key, value] of Object.entries(props)) {
+      if (Array.isArray(value)) {
+        props[key] = value.map((item) =>
+          item && typeof item === 'object' ? { ...item, id: newId() } : item
+        );
+      }
+    }
+    const copy = { ...original, id: newId(), props };
+    const sections = [...site.sections];
+    sections.splice(index + 1, 0, copy);
+    updateSections(sections);
+    setOpenId(copy.id);
+  };
+
   const addSection = () => {
     const id = newId();
     const props = withItemIds(structuredClone(registry[newType].defaults));
@@ -66,6 +112,23 @@ export default function Editor({ site, onChange }) {
       </label>
 
       <h3>Theme</h3>
+      <div className="theme-presets">
+        {themePresets.map((preset) => (
+          <button
+            key={preset.name}
+            type="button"
+            title={`Apply the ${preset.name} theme`}
+            onClick={() => onChange({ ...site, theme: { ...preset.theme } })}
+          >
+            <span className="theme-presets__swatch">
+              <span style={{ background: preset.theme.backgroundColor }} />
+              <span style={{ background: preset.theme.primaryColor }} />
+              <span style={{ background: preset.theme.textColor }} />
+            </span>
+            {preset.name}
+          </button>
+        ))}
+      </div>
       <div className="theme-grid">
         {themeFields.map((field) => (
           <label key={field.name}>
@@ -99,6 +162,8 @@ export default function Editor({ site, onChange }) {
             onChangeProp={(name, value) => updateSectionProp(section.id, name, value)}
             onMove={(direction) => moveSection(index, direction)}
             onDelete={() => deleteSection(section.id)}
+            onDuplicate={() => duplicateSection(index)}
+            onToggleHidden={() => toggleHidden(section.id)}
           />
         ))}
       </SortableList>

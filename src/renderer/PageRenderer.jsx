@@ -16,7 +16,8 @@ export default function PageRenderer({ site }) {
 
   return (
     <div className="site" style={themeVars}>
-      {sections.map((section) => {
+      {/* Hidden sections stay in the config but aren't rendered. */}
+      {sections.filter((section) => !section.hidden).map((section) => {
         const Component = registry[section.type];
         if (!Component) {
           return (

@@ -11,6 +11,8 @@ export default function SectionEditor({
   onChangeProp,
   onMove,
   onDelete,
+  onDuplicate,
+  onToggleHidden,
 }) {
   const Component = registry[section.type];
   const fields = Component?.fields ?? [];
@@ -21,14 +23,28 @@ export default function SectionEditor({
     <div
       ref={ref}
       style={style}
-      className={`section-editor ${isOpen ? 'open' : ''} ${isDragging ? 'dragging' : ''}`}
+      className={`section-editor ${isOpen ? 'open' : ''} ${isDragging ? 'dragging' : ''} ${
+        section.hidden ? 'is-hidden' : ''
+      }`}
     >
       <div className="section-editor__header">
         <DragHandle handleProps={handleProps} label={`Reorder ${Component?.label ?? section.type}`} />
         <button type="button" className="section-editor__title" onClick={onToggle}>
           {isOpen ? '▾' : '▸'} {Component?.label ?? section.type}
+          {section.hidden && <span className="badge">Hidden</span>}
         </button>
         <div className="section-editor__actions">
+          <button
+            type="button"
+            title={section.hidden ? 'Show on site' : 'Hide from site'}
+            aria-pressed={!!section.hidden}
+            onClick={onToggleHidden}
+          >
+            {section.hidden ? '🙈' : '👁'}
+          </button>
+          <button type="button" title="Duplicate" onClick={onDuplicate}>
+            ⧉
+          </button>
           <button type="button" title="Move up" disabled={isFirst} onClick={() => onMove(-1)}>
             ↑
           </button>
