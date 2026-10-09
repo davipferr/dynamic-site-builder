@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { newId } from '../ids.js';
+import { visibleFields } from '../forms/rules.js';
 import { DragHandle, SortableList, useSortableItem } from './Sortable.jsx';
 
 // Renders the right form control for a field definition.
@@ -65,6 +66,8 @@ export default function FieldInput({ field, value, onChange }) {
       );
     case 'list':
       return <ListInput field={field} value={value ?? []} onChange={onChange} />;
+    case 'json':
+      return <JsonInput field={field} value={value} onChange={onChange} />;
     default:
       return <input type="text" value={value ?? ''} onChange={(e) => onChange(e.target.value)} />;
   }
@@ -112,6 +115,68 @@ function EmojiInput({ value, onChange }) {
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+const formatJson = (value) =>
+  value === undefined || value === null ? '' : JSON.stringify(value, null, 2);
+
+// A text box for JSON (form conditions, validation rules...). The config only
+// changes when the text is valid JSON and passes the field's own `check`, so
+// a half-typed rule never breaks the site; the problem is shown instead.
+function JsonInput({ field, value, onChange }) {
+  const formatted = formatJson(value);
+  const [text, setText] = useState(formatted);
+  const [error, setError] = useState(null);
+
+  // If the value changes from outside (undo, reset, another client),
+  // replace the text. `synced` is the value the text currently matches.
+  const [synced, setSynced] = useState(formatted);
+  if (formatted !== synced) {
+    setSynced(formatted);
+    setText(formatted);
+    setError(null);
+  }
+
+  const handleChange = (newText) => {
+    setText(newText);
+    if (newText.trim() === '') {
+      setError(null);
+      setSynced('');
+      onChange(undefined);
+      return;
+    }
+    let parsed;
+    try {
+      parsed = JSON.parse(newText);
+    } catch {
+      setError('Not valid JSON yet. Check quotes, commas and brackets.');
+      return;
+    }
+    const problem = field.check?.(parsed);
+    if (problem) {
+      setError(problem);
+      return;
+    }
+    setError(null);
+    setSynced(formatJson(parsed));
+    onChange(parsed);
+  };
+
+  return (
+    <div className="json-input">
+      <textarea
+        rows={Math.min(Math.max(text.split('\n').length, 2), 12)}
+        spellCheck={false}
+        placeholder={field.placeholder}
+        value={text}
+        aria-invalid={!!error || undefined}
+        onChange={(e) => handleChange(e.target.value)}
+        // Tidy up the formatting once the user is done.
+        onBlur={() => !error && setText(formatJson(value))}
+      />
+      {error && <p className="json-input__error">{error}</p>}
     </div>
   );
 }
@@ -174,7 +239,7 @@ function ListItem({ item, index, field, isOpen, onToggle, onChange, onRemove }) 
         </button>
       </div>
       {isOpen &&
-        field.itemFields.map((sub) => (
+        visibleFields(field.itemFields, item).map((sub) => (
           <label key={sub.name}>
             <span>{sub.label}</span>
             <FieldInput field={sub} value={item[sub.name]} onChange={(v) => onChange(sub.name, v)} />

@@ -34,6 +34,70 @@ export const defaultSites = {
         },
       },
       {
+        id: 's4',
+        type: 'Form',
+        props: {
+          heading: 'Order a cake',
+          intro: 'Tell us what you need and we will confirm by email.',
+          questions: [
+            {
+              label: 'Your name',
+              name: 'name',
+              type: 'text',
+              validation: [{ rule: 'required' }],
+            },
+            {
+              label: 'Email',
+              name: 'email',
+              type: 'email',
+              placeholder: 'you@example.com',
+              validation: [{ rule: 'required' }, { rule: 'email' }],
+            },
+            {
+              label: 'Is it for a special occasion?',
+              name: 'occasion',
+              type: 'radio',
+              options: 'Yes, No',
+              validation: [{ rule: 'required', message: 'Please pick one.' }],
+            },
+            {
+              label: 'Which occasion?',
+              name: 'occasionType',
+              type: 'select',
+              options: 'Birthday, Wedding, Other',
+              showIf: { field: 'occasion', equals: 'yes' },
+              validation: [{ rule: 'required' }],
+            },
+            {
+              label: 'How many guests?',
+              name: 'guests',
+              type: 'number',
+              help: 'Weddings need at least 20 guests.',
+              showIf: { field: 'occasionType', in: ['Wedding'] },
+              validation: [
+                { rule: 'required' },
+                { rule: 'min', value: 20, message: 'For weddings we bake for 20 guests or more.' },
+              ],
+            },
+            {
+              label: 'Name to write on the cake',
+              name: 'cakeText',
+              type: 'text',
+              showIf: { field: 'occasionType', equals: 'Birthday' },
+              validation: [{ rule: 'maxLength', value: 30 }],
+            },
+            {
+              label: 'Pickup code (5 digits, if you have one)',
+              name: 'code',
+              type: 'text',
+              validation: [{ rule: 'pattern', value: '^[0-9]{5}$', message: 'The code has 5 digits.' }],
+            },
+          ],
+          submitLabel: 'Send order',
+          successMessage: 'Thanks! We will email you within a day to confirm your order.',
+        },
+      },
+      {
         id: 's3',
         type: 'Contact',
         props: {

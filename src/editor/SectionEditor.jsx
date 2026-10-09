@@ -1,4 +1,5 @@
 import { registry } from '../registry.js';
+import { visibleFields } from '../forms/rules.js';
 import FieldInput from './FieldInput.jsx';
 import { DragHandle, useSortableItem } from './Sortable.jsx';
 
@@ -59,7 +60,8 @@ export default function SectionEditor({
 
       {isOpen && (
         <div className="section-editor__body">
-          {fields.map((field) => {
+          {/* A field with `showIf` only appears when its condition holds. */}
+          {visibleFields(fields, section.props).map((field) => {
             // A <label> forwards clicks to its first control; a list contains
             // several buttons, so it gets a plain wrapper instead.
             const Wrapper = field.type === 'list' ? 'div' : 'label';

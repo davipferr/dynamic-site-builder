@@ -42,6 +42,40 @@ Sections, and the items inside list fields (feature cards, gallery images), can 
 - `src/editor/Sortable.jsx`: the shared pieces (`SortableList`, `useSortableItem`, `DragHandle`). Every sortable list uses them, and nested lists each get their own `DndContext`, so dragging an image never moves its section.
 - `src/ids.js`: drag and drop needs a stable `id` per item (array indexes change when items move). Ids are added automatically when data is loaded, so older saved configs keep working.
 
+## Forms: conditional fields and validation as JSON
+
+The **Form** section is a mini Typeform. Each question can have a `showIf` condition and a list of `validation` rules. Both are plain JSON, so they're saved with the rest of the site config. The engine is in `src/forms/rules.js`.
+
+```json
+{
+  "label": "What's your pet's name?",
+  "name": "petName",
+  "type": "text",
+  "showIf": { "field": "hasPet", "equals": "yes" },
+  "validation": [{ "rule": "required" }, { "rule": "maxLength", "value": 30 }]
+}
+```
+
+**Conditions** (`showIf`, and `when` on a rule):
+
+| Operator | Example |
+| --- | --- |
+| `equals`, `notEquals` | `{ "field": "hasPet", "equals": "yes" }` (text ignores case) |
+| `in`, `notIn` | `{ "field": "plan", "in": ["Pro", "Business"] }` |
+| `contains` | `{ "field": "topics", "contains": "design" }` (text or picked options) |
+| `filled` | `{ "field": "phone", "filled": true }` |
+| `gt`, `gte`, `lt`, `lte` | `{ "field": "age", "gte": 18, "lt": 65 }` (every operator must pass) |
+| `all`, `any`, `not` | `{ "any": [ {…}, {…} ] }`, `{ "not": {…} }` |
+
+**Rules**: `required`, `minLength`, `maxLength`, `min`, `max`, `email`, `pattern`, `sameAs` (`"field": "password"`), `minSelected`, `maxSelected`. Each rule can have a custom `message` and a `when` condition. Rules other than `required` skip empty answers, so optional fields can stay blank.
+
+How it behaves:
+
+- Questions are checked top to bottom, so a condition should point to a question **above** it. A hidden question counts as unanswered, so chains (C depends on B, B depends on A) collapse together.
+- Hidden questions are never validated or submitted.
+- In the editor, a JSON box only updates the config once it's valid JSON with known operators and rules. Until then it shows what's wrong.
+- The editor uses the same engine for itself: any entry in a section's `fields` (or a list's `itemFields`) can have `showIf`. For example, "Options" only shows for select/radio questions.
+
 ## Ideas for next steps
 
 - Create and delete client sites from the UI

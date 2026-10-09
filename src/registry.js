@@ -10,6 +10,7 @@ import Faq from './sections/Faq.jsx';
 import Pricing from './sections/Pricing.jsx';
 import Stats from './sections/Stats.jsx';
 import Divider from './sections/Divider.jsx';
+import Form from './sections/Form.jsx';
 
 export const registry = {
   Hero,
@@ -20,5 +21,6 @@ export const registry = {
   Pricing,
   Faq,
   Contact,
+  Form,
   Divider,
 };

@@ -393,6 +393,22 @@ input[type='color'] {
   white-space: nowrap;
 }
 
+.json-input textarea {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 12px;
+  resize: vertical;
+}
+
+.json-input textarea[aria-invalid] {
+  border-color: #dc2626;
+}
+
+.json-input__error {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #dc2626;
+}
+
 .add-section {
   display: flex;
   gap: 8px;
@@ -639,6 +655,116 @@ input[type='color'] {
   margin: 0;
   border: none;
   border-top: 1px solid color-mix(in srgb, var(--text) 15%, transparent);
+}
+
+.form-section form,
+.form-section__answers {
+  max-width: 560px;
+}
+
+.form-question {
+  border: none;
+  padding: 0;
+  margin: 0 0 18px;
+  min-width: 0;
+}
+
+.form-question > label,
+.form-question legend {
+  display: block;
+  font-weight: 600;
+  padding: 0;
+  margin-bottom: 6px;
+}
+
+.form-section input:not([type='checkbox'], [type='radio']),
+.form-section textarea,
+.form-section select {
+  font-size: 1rem;
+  padding: 10px 12px;
+  background: var(--bg);
+  color: var(--text);
+  border-color: color-mix(in srgb, var(--text) 25%, transparent);
+}
+
+.form-section input:focus-visible,
+.form-section textarea:focus-visible,
+.form-section select:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.form-section input[type='checkbox'],
+.form-section input[type='radio'] {
+  width: auto;
+  accent-color: var(--primary);
+  margin: 0;
+}
+
+.form-question__choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+
+.form-question__choices label,
+.form-question__single {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.form-question__help {
+  margin: -2px 0 8px;
+  font-size: 0.9rem;
+  opacity: 0.75;
+}
+
+.form-question.has-error input:not([type='checkbox'], [type='radio']),
+.form-question.has-error textarea,
+.form-question.has-error select {
+  border-color: #dc2626;
+}
+
+.form-question__error {
+  margin: 6px 0 0;
+  color: #dc2626;
+  font-size: 0.9rem;
+}
+
+.form-section .btn {
+  font-size: 1rem;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 999px;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 600;
+}
+
+.form-section__success {
+  font-size: 1.2rem;
+}
+
+.form-section__answers div {
+  display: flex;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--text) 15%, transparent);
+}
+
+.form-section__answers dt {
+  flex: 0 0 45%;
+  font-weight: 600;
+}
+
+.form-section__answers dd {
+  margin: 0;
+}
+
+.form-section__answers + .btn {
+  margin-top: 24px;
 }
 
 .unknown-section {
